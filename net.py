@@ -14,7 +14,8 @@ else:
 
 #网络超参数
 embeddingSize = 256 # 节点的嵌入维度
-citySize = 51  # 节点总数
+citySize = 21  # 节点总数
+agentSize = 3  # 车辆数
 # batch = 128  # batch size
 batch = 1 # batch size
 M:int = 8  # 多头注意力中的头数
@@ -23,16 +24,18 @@ isTrain = True  # 是否训练
 C = 10  # 做softmax得到选取每个点概率前，clip the result所使用的参数
 
 class ActNet(nn.Module):
-    def __init__(self, embedding_size:int=embeddingSize, city_size:int=citySize, batch:int=batch, m:int=M, dk:int=dk):
+    def __init__(self, embedding_size:int=embeddingSize, city_size:int=citySize,agent_size:int = agentSize, batch:int=batch, m:int=M, dk:int=dk, feature_dim:int=3):
         super(ActNet, self).__init__()
         self.embedding_size = embedding_size
         self.city_size = city_size
+        self.agent_size = agent_size
         self.batch = batch
         self.M = M
         self.dk = int(dk)
+        self.feature_dim = feature_dim
 
         # 嵌入层
-        self.embedding = nn.Linear(2, embedding_size)
+        self.embedding = nn.Linear(self.feature_dim, embedding_size)
 
         # encoder
         self.wq1 = nn.Linear(embedding_size, embedding_size)
@@ -74,11 +77,13 @@ class ActNet(nn.Module):
 
     def forward(self, x_, is_train):
         s1 = torch.unsqueeze(x_, dim=1)
-        s1 = s1.expand(self.batch, self.city_size, self.city_size, 2)
+        s1 = s1.expand(self.batch, self.city_size, self.city_size, self.feature_dim)
         s2 = torch.unsqueeze(x_, dim=2)
-        s2 = s2.expand(self.batch, self.city_size, self.city_size, 2)
+        s2 = s2.expand(self.batch, self.city_size, self.city_size, self.feature_dim)
         ss = s1 - s2
+        ss = ss[:,:,:,0:2]
         dis = torch.norm(ss, 2, dim=3, keepdim=True)  # dis表示任意两点间的距离 (batch, city_size, city_size, 1)
+        dis[:,:,0:self.agent_size,:] = 0
         # 嵌入层
         x = self.embedding(x_)#(batch, city_size, embedding_size)
         # encoder
@@ -207,7 +212,7 @@ class ActNet(nn.Module):
 if __name__ == '__main__':
     act_net = ActNet()
     act_net = act_net.to(DEVICE)
-    x = torch.rand([batch, citySize, 2])
+    x = torch.rand([batch, citySize, 3])
     x = x.to(DEVICE)
     seq, pro, distance = act_net(x, isTrain)
     print(seq)

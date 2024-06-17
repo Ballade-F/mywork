@@ -16,10 +16,10 @@ if __name__ == '__main__':
     net1 = net1.to(DEVICE)
     net2 = net.ActNet()
     net2 = net2.to(DEVICE)
-    net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/epoch8-i99-dis_3.88936.pt'))
+    # net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/epoch8-i99-dis_3.88936.pt'))
 
     epochs = 10
-    times = 100#mini batch
+    times = 200#mini batch
     batch = net.batch
     city_size = net.citySize
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     #用mtsp生成数据
     # X = torch.rand(batch*times,city_size,2)
     # tX = torch.rand(batch*test2save_times,city_size,2)
-    n_agent = 1
+    n_agent = net.agentSize
     n_cities = city_size - n_agent
     env = mtsp.mtsp(n_cities, n_agent, batch, times, test2save_times, 2024)
 
