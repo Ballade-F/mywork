@@ -21,17 +21,17 @@ if __name__ == '__main__':
     epochs = 10
     times = 200#mini batch
     batch = net.batch
-    city_size = net.citySize
+    node_size = net.nodeSize
 
     bl_alpha = 0.05  # 做t-检验更新baseline时所设置的阈值
     test2save_times = 20  # 训练过程中每次保存模型所需的测试batch数
     min = 100  # 当前已保存的所有模型中测试路径长度的最小值
 
     #用mtsp生成数据
-    # X = torch.rand(batch*times,city_size,2)
-    # tX = torch.rand(batch*test2save_times,city_size,2)
+    # X = torch.rand(batch*times,node_size,2)
+    # tX = torch.rand(batch*test2save_times,node_size,2)
     n_agent = net.agentSize
-    n_cities = city_size - n_agent
+    n_cities = node_size - n_agent
     env = mtsp.mtsp(n_cities, n_agent, batch, times, test2save_times, 2024)
 
     save_dir = '/home/ballade/Desktop/Project/MTSP/mywork/save/'
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             time2 = time.time()
             # print('time:',time2-time1)
 
-            pro = torch.log(pro1)#(batch, city_size)
+            pro = torch.log(pro1)#(batch, node_size)
             loss = torch.sum(pro, dim=1)#(batch)
             score = dis1-dis2
             score = score.detach()#(batch)

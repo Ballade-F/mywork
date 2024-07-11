@@ -154,7 +154,7 @@ class GreedyTaskAllocationPlanner:
 if __name__ == '__main__':
     planner = GreedyTaskAllocationPlanner()
     num_task = 20
-    num_agent = 1
+    num_agent = 3
     task_poses = np.random.rand(num_task, 2)
     agent_poses = np.random.rand(num_agent, 2)
     # task_poses = []
