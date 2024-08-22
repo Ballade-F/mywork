@@ -86,8 +86,8 @@ class GATaskAllocationPlanner:
                 dist = self.time_estimate_func(task_poses[i_task2], task_poses[i_task1])
                 self.task_dist_mat[i_task2, i_task1] = dist
         print('Start GA optimization.')
-        population_size = 60    # 种群规模
-        max_iteration_num = 200 # 最大迭代次数
+        population_size = 30    # 种群规模
+        max_iteration_num = 300 # 最大迭代次数
 
         # 初始种群
         population = [GATaskAllocationPlanner.Gene(self.num_task, self.num_agent)\

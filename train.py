@@ -10,16 +10,18 @@ import net
 import mtsp
 from scipy.stats import ttest_rel
 
+import csv
+
 if __name__ == '__main__':
     DEVICE = net.DEVICE
     net1 = net.ActNet()
     net1 = net1.to(DEVICE)
     net2 = net.ActNet()
     net2 = net2.to(DEVICE)
-    # net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/epoch8-i99-dis_3.88936.pt'))
+    net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/M-8-date2024-07-12-epoch1-i399-dis_8.68620.pt'))
 
     epochs = 10
-    times = 200#mini batch
+    times = 400#mini batch
     batch = net.batch
     node_size = net.nodeSize
 
@@ -36,8 +38,14 @@ if __name__ == '__main__':
 
     save_dir = '/home/ballade/Desktop/Project/MTSP/mywork/save/'
 
+    #保存训练过程dis
+    # csv_path = '/home/ballade/Desktop/Project/MTSP/mywork/training/M8R8C100.csv'
+    # csv_file = open(csv_path, 'w', newline='')
+    # csv_writer = csv.writer(csv_file)
+    # csv_writer.writerow(['epoch', 'i', 'mean_dis1'])
+
     #训练
-    opt = optim.Adam(net1.parameters(), lr=0.0005)
+    opt = optim.Adam(net1.parameters(), lr=0.00015)
     # torch.autograd.set_detect_anomaly(True)
 
     for epoch in range(epochs):
@@ -64,8 +72,8 @@ if __name__ == '__main__':
             loss.backward()
             nn.utils.clip_grad_norm_(net1.parameters(), 1)#梯度裁剪,防止梯度爆炸
             opt.step()
-            print('epoch={},i={},mean_dis1={},mean_dis2={}'.format(epoch, i, torch.mean(dis1), torch.mean(
-                dis2)))  # ,'disloss:',t.mean((dis1-dis2)*(dis1-dis2)), t.mean(t.abs(dis1-dis2)), nan)
+            # print('epoch={},i={},mean_dis1={},mean_dis2={}'.format(epoch, i, torch.mean(dis1), torch.mean(
+            #     dis2)))  # ,'disloss:',t.mean((dis1-dis2)*(dis1-dis2)), t.mean(t.abs(dis1-dis2)), nan)
 
             # OneSidedPairedTTest(做t-检验看当前Sampling的解效果是否显著好于greedy的解效果,如果是则更新使用greedy策略作为baseline的net2参数)
             if (dis1.mean() - dis2.mean()) < 0:
@@ -87,14 +95,18 @@ if __name__ == '__main__':
                     length = length + torch.mean(dis)
                 length = length / test2save_times
                 if length < min:
-                    torch.save(net1.state_dict(), os.path.join(save_dir,'date{}-epoch{}-i{}-dis_{:.5f}.pt'.format(
-                        time.strftime("%Y-%m-%d", time.localtime()), epoch, i, length.item())))
-                    # torch.save(net1.state_dict(), os.path.join(save_dir,
-                    #                                        'epoch{}-i{}-dis_{:.5f}.pt'.format(
-                    #                                            epoch, i, length.item())))
+                    torch.save(net1.state_dict(), os.path.join(save_dir,'M-{}-date{}-epoch{}-i{}-dis_{:.5f}.pt'.format(
+                        net.M, time.strftime("%Y-%m-%d", time.localtime()), epoch, i, length.item())))
                     min = length
-                print('i=',i,'min=', min.item(), 'length=', length.item())
-                # print('epoch={},i={},mean_dis1={},mean_dis2={}'.format(epoch, i, torch.mean(dis1), torch.mean(dis2)))
+                print('epoch=',epoch,'i=',i,'min=', min.item(), 'length=', length.item())
+
+                #csv保存训练过程dis
+                # csv_writer.writerow([epoch, i, length.item()])
+                # csv_file.flush()
+
+
+    # csv_file.close()
+
 
 
             

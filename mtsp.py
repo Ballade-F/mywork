@@ -78,8 +78,8 @@ class mtsp():
         all_cities = self.tX[sample_idx]
         plt.scatter(cities[:,0], cities[:,1], s=40, c='blue', marker='o')
         plt.scatter(start[:,0], start[:,1], s=100, c='red')
-        for i in range(self.n_cities):
-            plt.text(cities[i,0], cities[i,1], str(i))
+        # for i in range(self.n_cities):
+        #     plt.text(cities[i,0], cities[i,1], str(i))
         
         if id_split:
             for i in range(self.n_agents):

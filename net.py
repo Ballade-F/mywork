@@ -14,7 +14,7 @@ else:
 
 #网络超参数
 embeddingSize = 256 # 节点的嵌入维度
-nodeSize = 21  # 节点总数
+nodeSize = 23  # 节点总数
 agentSize = 3  # 车辆数
 # batch = 128  # batch size
 batch = 512 # batch size
