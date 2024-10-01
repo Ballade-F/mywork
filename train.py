@@ -18,10 +18,10 @@ if __name__ == '__main__':
     net1 = net1.to(DEVICE)
     net2 = net.ActNet()
     net2 = net2.to(DEVICE)
-    net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/M-8-date2024-07-12-epoch1-i399-dis_8.68620.pt'))
+    # net1.load_state_dict(torch.load('/home/ballade/Desktop/Project/MTSP/mywork/save/M-8-date2024-07-12-epoch1-i399-dis_8.68620.pt'))
 
-    epochs = 10
-    times = 400#mini batch
+    epochs = 4000
+    times = 1000#mini batch
     batch = net.batch
     node_size = net.nodeSize
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     n_cities = node_size - n_agent
     env = mtsp.mtsp(n_cities, n_agent, batch, times, test2save_times, 2024)
 
-    save_dir = '/home/ballade/Desktop/Project/MTSP/mywork/save/'
+    save_dir = '/home/users/wzr/project/mywork/save/'
 
     #保存训练过程dis
     # csv_path = '/home/ballade/Desktop/Project/MTSP/mywork/training/M8R8C100.csv'
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                     net2.load_state_dict(net1.state_dict())
 
             # 每隔xxx步做测试判断结果有没有改进，如果改进了则把当前模型保存下来
-            if (i + 1) % 100 == 0:
+            if (i + 1) % 200 == 0:
                 length = torch.zeros(1).to(DEVICE)
                 for j in range(test2save_times):
                     torch.cuda.empty_cache()

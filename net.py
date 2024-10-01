@@ -14,10 +14,10 @@ else:
 
 #网络超参数
 embeddingSize = 256 # 节点的嵌入维度
-nodeSize = 23  # 节点总数
-agentSize = 3  # 车辆数
+nodeSize = 108  # 节点总数
+agentSize = 8  # 车辆数
 # batch = 128  # batch size
-batch = 512 # batch size
+batch = 256 # batch size
 M:int = 8  # 多头注意力中的头数
 dk:int = embeddingSize / M  # 多头注意力中每一头的维度
 isTrain = True  # 是否训练
